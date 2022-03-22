@@ -23,6 +23,7 @@ MODE_GAME = 1
 MODE_DEATH = 2
 game_mode = MODE_INTRO
 dead = False
+lives = 3
 
 def init_game():
     global game_mode
@@ -41,19 +42,19 @@ class Wheel:
     def update(self):
         self.pos.add(self.vel)
         self.vel.multiply(0.85)
-        
+
         if self.pos.x >= (WIDTH):
             self.pos.x = 0
         elif self.pos.x <= 0:
             self.pos.x = WIDTH
-            
+
         elif self.pos.y >= HEIGHT:
             self.pos.y = 0
         elif self.pos.y <= 0:
             self.pos.y = HEIGHT
         else:
             pass
-                    
+
 class Balls:
     def __init__(self , list_balls , list_radius , wheel):
         self.vel = Vector()
@@ -66,7 +67,7 @@ class Balls:
         self.in_collision = False
 
     def draw (self, canvas):
- 
+
         for z , g in zip(self.list_balls , self.list_radius):
             if g > 10:
                 self.colour = 'Blue'
@@ -134,7 +135,7 @@ class Interaction:
             self.wheel.vel.add(Vector(0, -1))
         if self.keyboard.down:
             self.wheel.vel.add(Vector(0, 1))
-            
+
 list_balls = []
 list_radius= []
 number_balls = random.randint(5, 10)
@@ -145,7 +146,7 @@ for i in range(0 , number_balls):
     pos = Vector(X, Y)
     list_radius.append(radius)
     list_balls.append(pos)
-    
+
 kbd = Keyboard()
 wheel = Wheel(Vector(WIDTH / 2, HEIGHT - 40), 40)
 balls = Balls(list_balls , list_radius , wheel)
@@ -159,14 +160,16 @@ def draw_text_centre( canvas, text, y, size, colour ):
     centre = get_canvas_centre()
     pos = ( centre[ 0 ] - frame.get_canvas_textwidth( text, size, FONT_STYLE ) // 2, y )
     canvas.draw_text( text, pos, size, colour, FONT_STYLE )
-    
+
 def draw_text_right( canvas, text, x, y, size, colour ):
     pos = ( x - frame.get_canvas_textwidth( text, size, FONT_STYLE ), y )
     canvas.draw_text( text, pos, size, colour, FONT_STYLE )
-    
+
 def render_intro(canvas):
+    global game_mode
+
     INTRO_TEXT_COLOUR = "Yellow"
-    centre = get_canvas_centre()    
+    centre = get_canvas_centre()
     draw_text_centre( canvas, "CS1812 - Osmos", 190, 58, INTRO_TEXT_COLOUR )
     draw_text_centre( canvas, "Press Space to begin", 340, 24, INTRO_TEXT_COLOUR )
     draw_text_centre( canvas, "Use Cursor Keys OR WASD to move", 420, 19, INTRO_TEXT_COLOUR )
@@ -175,13 +178,19 @@ def render_intro(canvas):
 
 def render_game(canvas):
     global game_mode
-    
+
     inter.update()
     wheel.update()
     wheel.draw(canvas)
     balls.draw(canvas)
     balls.update(track)
-    
+
+    """
+def render_death(canvas):
+    global game_mode
+    Your code here
+    """
+
 def draw(canvas):
     if game_mode == MODE_GAME:
         render_game(canvas)
